@@ -13,8 +13,9 @@ static void tInteruptSkunk(uint32_t interruptAssertedMask, void *param) {
 	data->m_mutex->lock();
 }
 
-SkunkEncoder::SkunkEncoder(int dataPort, int signPort) {
+SkunkEncoder::SkunkEncoder(int dataPort, int signPort, std::string name) {
 	current_position = 0;
+	this->name = name;
 	//check digitalinput port before using? (e.g. CheckDigitalChannel)
 	dataSource = new DigitalInput(dataPort);
 	signSource = new DigitalInput(signPort);
@@ -30,14 +31,18 @@ SkunkEncoder::SkunkEncoder(int dataPort, int signPort) {
 	dataSource->RequestInterrupts(&tInteruptSkunk, data);
 }
 
-SkunkEncoder::~SkunkEncoder(){
+void SkunkEncoder::post() {
+	SmartDashboard::PutNumber("SkunkEncoder" + name, current_position);
+}
+
+SkunkEncoder::~SkunkEncoder() {
 	delete mutex;
 	delete dataSource;
 	delete signSource;
 	delete data;
 }
 
-void SkunkEncoder::Reset(){
+void SkunkEncoder::Reset() {
 	current_position = 0;
 }
 
@@ -45,6 +50,6 @@ int SkunkEncoder::GetPosition() {
 	return current_position;
 }
 
-double SkunkEncoder::PIDGet(){
+double SkunkEncoder::PIDGet() {
 	return current_position;
 }

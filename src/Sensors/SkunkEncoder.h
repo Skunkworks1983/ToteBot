@@ -16,16 +16,18 @@ struct Data {
 
 class SkunkEncoder: public PIDSource {
 public:
-	SkunkEncoder(int dataPort, int signPort);
+	SkunkEncoder(int dataPort, int signPort, std::string name = "DEFAULT");
 	virtual ~SkunkEncoder();
 	int GetPosition();
 	void Reset();
 	double PIDGet();
+	void post();
 private:
 	int current_position;
 	DigitalInput *dataSource, *signSource;
 	priority_mutex *mutex;
 	Data *data;
+	std::string name;
 };
 
 #endif
