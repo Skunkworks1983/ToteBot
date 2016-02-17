@@ -11,10 +11,17 @@ DriveBase::DriveBase() :
 	backLeft = new CANTalon(BACK_LEFT_MOTOR_CHANNEL);
 	backRight = new CANTalon(BACK_RIGHT_MOTOR_CHANNEL);
 
-	encFrontLeft = new SkunkEncoder(ENCODER_FRONT_LEFT_PORTS);
-	encFrontLeft = new SkunkEncoder(ENCODER_FRONT_RIGHT_PORTS);
-	encFrontLeft = new SkunkEncoder(ENCODER_BACK_LEFT_PORTS);
-	encFrontLeft = new SkunkEncoder(ENCODER_BACK_RIGHT_PORTS);
+	frontLeft->SetControlMode(CANTalon::ControlMode::kPercentVbus);
+	frontRight->SetControlMode(CANTalon::ControlMode::kPercentVbus);
+	backLeft->SetControlMode(CANTalon::ControlMode::kPercentVbus);
+	backRight->SetControlMode(CANTalon::ControlMode::kPercentVbus);
+
+	/*
+	encFrontLeft = new SkunkEncoder(ENCODER_FRONT_LEFT_PORTS, "encFrontLeft");
+	encFrontRight = new SkunkEncoder(ENCODER_FRONT_RIGHT_PORTS, "encFrontRight");
+	encBackLeft = new SkunkEncoder(ENCODER_BACK_LEFT_PORTS, "encBackLeft");
+	encBackRight = new SkunkEncoder(ENCODER_BACK_RIGHT_PORTS, "encBackRight");
+	*/
 }
 
 void DriveBase::InitDefaultCommand()
@@ -23,8 +30,23 @@ void DriveBase::InitDefaultCommand()
 	SetDefaultCommand(new TankDrive());
 }
 
+int DriveBase::getEncoderTicks(EncoderLoc loc){
+	switch(loc){
+	case FRONT_LEFT:
+		return encFrontLeft->GetPosition();
+	case FRONT_RIGHT:
+		return encFrontRight->GetPosition();
+	case BACK_LEFT:
+		return encBackLeft->GetPosition();
+	case BACK_RIGHT:
+		return encBackRight->GetPosition();
+	}
+	return 0;	//just to remove the warning
+}
 
 void DriveBase::setSpeeds(float left, float right){
+	SmartDashboard::PutNumber("right front", right);
+
 	frontLeft->Set(left);
 	frontRight->Set(right);
 	backLeft->Set(left);

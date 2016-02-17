@@ -11,9 +11,14 @@ private:
 	CANTalon *frontLeft, *frontRight, *backLeft, *backRight;
 	SkunkEncoder *encFrontLeft, *encFrontRight, *encBackLeft, *encBackRight;
 public:
+	enum EncoderLoc{
+		FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT
+	};
+
 	DriveBase();
 	void InitDefaultCommand();
 	void setSpeeds(float left, float right);
+	int getEncoderTicks(EncoderLoc loc);
 };
 
 #endif
